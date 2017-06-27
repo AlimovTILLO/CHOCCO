@@ -99,3 +99,16 @@ ENV/
 
 # mypy
 .mypy_cache/
+
+#.idea
+
+.idea/CHOCCO.iml
+.idea/encodings.xml
+.idea/inspectionProfiles/
+.idea/misc.xml
+.idea/modules.xml
+.idea/workspace.xml
+
+/venv/
+!/core/
+!/README.md
