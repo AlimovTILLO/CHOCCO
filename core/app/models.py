@@ -4,13 +4,15 @@ from django.db import models
 from django.contrib.auth.models import User
 from redactor.fields import RedactorField
 from taggit.managers import TaggableManager
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 
 class MyUser(models.Model):
-    myuser = models.OneToOneField(User, on_delete=models.CASCADE, verbose_name='Автор', related_name='my_user')
+    user = models.OneToOneField(User, on_delete=models.CASCADE, verbose_name='Автор', related_name='my_user')
     alias = models.CharField(verbose_name='Псевдоним', max_length=25)
     karma = models.IntegerField(verbose_name='Карма', blank=True, null=True)
-    image = models.ImageField(verbose_name='Изображение')
+    image = models.ImageField(verbose_name='Изображение', blank=True, )
 
     def __str__(self):
         return self.alias
@@ -35,13 +37,13 @@ class Category(models.Model):
 class Article(models.Model):
     category = models.ForeignKey(Category, verbose_name='Категория', related_name='category_article')
     title = models.CharField(verbose_name='Заголовок', max_length=120)
-    slug = models.SlugField(verbose_name='Ярлык')
-    image = models.ImageField(verbose_name='Изображение', max_length=450)
+    slug = models.SlugField(verbose_name='Ярлык', unique=True)
+    image = models.ImageField(verbose_name='Изображение', max_length=450, blank=True)
     description = RedactorField(verbose_name='Статья')
     created_at = models.DateTimeField(verbose_name='Дата создания', auto_now_add=True)
     edited_at = models.DateTimeField(verbose_name='Дата редактирования', auto_now=True)
     published = models.BooleanField(verbose_name='Опубликовано', default=True)
-    rating = models.IntegerField(verbose_name='Рейтинг', blank=True, null=True)
+    rating = models.IntegerField(default=0, verbose_name='Рейтинг')
     tags = TaggableManager(verbose_name='Теги', blank=True)
     author = models.ForeignKey(MyUser, verbose_name='Автор', related_name='user_article')
 
@@ -49,13 +51,7 @@ class Article(models.Model):
         return self.title
 
     def get_absolute_url(self):
-        return reverse('article-detail', args=[self.slug, self.pk])
-
-    def get_related(self):
-        return News.objects.filter(tags__in=self.tags.all()).exclude(pk=self.pk).distinct().order_by('-created_at')
-
-    def get_related_video(self):
-        return Video.objects.filter(tags__in=self.tags.all()).distinct()
+        return '%s-%s' % (self.slug, self.pk)
 
     class Meta:
         verbose_name = 'Статья'
@@ -69,6 +65,3 @@ class Comment(models.Model):
     edited_at = models.DateTimeField(verbose_name='Дата редактирования', auto_now=True)
     published = models.BooleanField(verbose_name='Опубликовано', default=True)
     author = models.ForeignKey(MyUser, verbose_name='Автор', related_name='user_comment')
-
-
-

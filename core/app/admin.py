@@ -13,6 +13,15 @@ class CommentInlineAdmin(admin.TabularInline):
 class ArticleAdmin(admin.ModelAdmin):
     inlines = [CommentInlineAdmin]
     form = forms.ArticleForm
+    readonly_fields = ['author', 'created_at', 'edited_at']
+    list_display = ['title', 'published', 'created_at', 'edited_at', 'author']
+    list_filter = ['category', 'published', 'created_at', 'author']
+    search_fields = ['title', 'slug', 'description', 'tags__name']
+    prepopulated_fields = {"slug": ("title",)}
+
+    def save_model(self, request, obj, form, change):
+        obj.author = request.user
+        obj.save()
 
 
 class CategoryAdmin(admin.ModelAdmin):

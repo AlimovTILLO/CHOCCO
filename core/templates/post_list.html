@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block content %}
+
+
+    {% for article in articles %}
+        <div>
+            <h1><a href="/article/{{ article.get_absolute_url }}">{{ article.title }}</a></h1>
+            <small>published: {{ article.created_at }}</small>
+            <br>
+            <img src="{{ article.image }}" alt="{{ article.title }}">
+            {{ article.description|striptags|truncatechars:150 }}
+        </div>
+    {% empty %}
+        <p>Статей не обнаружено :(</p>
+    {% endfor %}
+
+    {% if paginator.num_pages > 1 %}
+        {% if page_obj.has_previous %}
+            <a href="/page{{ page_obj.previous_page_number }}/">&larr;</a>
+        {% endif %}
+        <span class="current_page">{{ paginator.number }}</span>
+        {% if page_obj.has_next %}
+            <a href="/page{{ page_obj.next_page_number }}">&rarr;</a>
+        {% endif %}
+    {% endif %}
+
+
+{% endblock %}

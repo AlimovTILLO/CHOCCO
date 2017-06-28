@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block content %}
+
+    <div>
+        <h1><a href="{{ article.get_absolute_url }}">{{ i.title }}</a></h1>
+        <small>published: {{ article.created_at }}</small>
+        <br>
+        <img src="{{ article.image }}" alt="{{ article.title }}">
+        {{ article.description|striptags|truncatechars:150 }}
+    </div>
+
+{% endblock %}
