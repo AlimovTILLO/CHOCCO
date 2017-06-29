@@ -1,6 +1,6 @@
 from django.contrib import admin
 from app import forms
-from app.models import Comment, Article, Category, MyUser
+from app.models import Comment, Article, Category, MyUser, Like
 
 
 class CommentInlineAdmin(admin.TabularInline):
@@ -20,7 +20,7 @@ class ArticleAdmin(admin.ModelAdmin):
     prepopulated_fields = {"slug": ("title",)}
 
     def save_model(self, request, obj, form, change):
-        obj.author = request.user
+        obj.author = request.user.my_user
         obj.save()
 
 
@@ -35,4 +35,5 @@ class MyUserAdmin(admin.ModelAdmin):
 admin.site.register(Article, ArticleAdmin)
 admin.site.register(Category, CategoryAdmin)
 admin.site.register(MyUser, MyUserAdmin)
+admin.site.register(Like)
 

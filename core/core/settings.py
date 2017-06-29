@@ -124,3 +124,5 @@ USE_TZ = True
 STATIC_URL = '/static/'
 REDACTOR_OPTIONS = {'lang': 'en'}
 REDACTOR_UPLOAD = 'uploads/'
+
+LOGIN_REDIRECT_URL = '/'

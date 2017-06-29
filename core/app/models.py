@@ -8,9 +8,16 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 
 
+@receiver(post_save, sender=User)
+def update_user_profile(sender, instance, created, **kwargs):
+    if created:
+        MyUser.objects.create(user=instance)
+    instance.my_user.save()
+
+
 class MyUser(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, verbose_name='Автор', related_name='my_user')
-    alias = models.CharField(verbose_name='Псевдоним', max_length=25)
+    alias = models.CharField(verbose_name='Псевдоним', max_length=30)
     karma = models.IntegerField(verbose_name='Карма', blank=True, null=True)
     image = models.ImageField(verbose_name='Изображение', blank=True, )
 
@@ -43,7 +50,6 @@ class Article(models.Model):
     created_at = models.DateTimeField(verbose_name='Дата создания', auto_now_add=True)
     edited_at = models.DateTimeField(verbose_name='Дата редактирования', auto_now=True)
     published = models.BooleanField(verbose_name='Опубликовано', default=True)
-    rating = models.IntegerField(default=0, verbose_name='Рейтинг')
     tags = TaggableManager(verbose_name='Теги', blank=True)
     author = models.ForeignKey(MyUser, verbose_name='Автор', related_name='user_article')
 
@@ -63,5 +69,16 @@ class Comment(models.Model):
     title = models.CharField(verbose_name='Комменрарий', max_length=120)
     created_at = models.DateTimeField(verbose_name='Дата создания', auto_now_add=True)
     edited_at = models.DateTimeField(verbose_name='Дата редактирования', auto_now=True)
-    published = models.BooleanField(verbose_name='Опубликовано', default=True)
+    published = models.BooleanField(verbose_name='Опубликовано', default=False)
     author = models.ForeignKey(MyUser, verbose_name='Автор', related_name='user_comment')
+
+    def approve(self):
+        self.published = True
+        self.save()
+
+
+class Like(models.Model):
+    user = models.ManyToManyField(MyUser, related_name='likes')
+    article = models.ForeignKey(Article)
+    date = models.DateTimeField(auto_now_add=True)
+    total_likes = models.IntegerField(default=0)

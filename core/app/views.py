@@ -1,12 +1,12 @@
-from django.contrib.auth import login, authenticate
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.forms import UserCreationForm
-from app.forms import NewArticleForm, SignUpForm
-from app.models import MyUser, Article, Comment, Category
 from django.views.generic import ListView, DetailView, FormView
-from django.core.paginator import Paginator
-from django.http import HttpResponseRedirect
+from app.models import MyUser, Article, Comment, Category, Like
+from django.contrib.auth.forms import UserCreationForm
 from django.utils.decorators import method_decorator
+from django.contrib.auth import login, authenticate
+from app.forms import NewArticleForm, SignUpForm, CommentForm
+from django.http import HttpResponseRedirect
+from django.core.paginator import Paginator
 from django.utils import timezone
 
 
@@ -14,7 +14,7 @@ class ArticleListView(ListView):
     template_name = 'post_list.html'
     model = Article
     paginate_by = 5
-    context_object_name = 'articles_index'
+    # context_object_name = 'articles_index'
 
     def get_context_data(self, **kwargs):
         context = super(ArticleListView, self).get_context_data(**kwargs)
@@ -24,17 +24,18 @@ class ArticleListView(ListView):
 
 class ArticlesIndex(ArticleListView):
     template_name = 'index.html'
-    context_object_name = 'articles_all'
+    # context_object_name = 'articles_all'
 
     def get_context_data(self, **kwargs):
         context = super(ArticlesIndex, self).get_context_data(**kwargs)
-        context['top_articles'] = Article.objects.filter(published=True).order_by('created_at').exclude(rating__lt=10)
+        # context['top_articles'] = Article.objects.filter(published=True).order_by('created_at').exclude(rating__lt=10)
+        context['top_articles'] = Article.objects.filter(published=True).order_by('created_at')
         return context
 
 
 class ArticleDetailView(DetailView):
     model = Article
-    context_object_name = 'article'
+    # context_object_name = 'article'
     template_name = 'article_detail.html'
 
     def get_object(self):
@@ -44,45 +45,32 @@ class ArticleDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super(ArticleDetailView, self).get_context_data(**kwargs)
         context['article'] = Article.objects.get(pk=self.kwargs['pk'])
-        context['comments'] = Comment.objects.filter(published=True).order_by('-created_at')
+        context['likes'] = Like.objects.filter(article=self.object.id)
+        context['comments'] = Comment.objects.filter(article=self.object.id).select_related().order_by('-created_at')
         return context
 
-
-# def signup(request):
-#     if request.method == 'POST':
-#         form = UserCreationForm(request.POST)
-#         if form.is_valid():
-#             form.save()
-#             username = form.cleaned_data.get('username')
-#             raw_password = form.cleaned_data.get('password1')
-#             user = authenticate(username=username, password=raw_password)
-#             login(request, user)
-#             return HttpResponseRedirect('/')
-#     else:
-#         form = UserCreationForm()
-#     return render(request, 'signup.html', {'form': form})
-
-
-def signup(request):
-    if request.method == 'POST':
-        form = SignUpForm(request.POST)
+    def post(self, request, *args, **kwargs):
+        self.object = article = self.get_object()
+        if request.user.is_authenticated():
+            form = CommentForm(request.POST)
         if form.is_valid():
-            form.save()
-            username = form.cleaned_data.get('username')
-            alias = form.cleaned_data.get('alias')
-            raw_password = form.cleaned_data.get('password1')
-            user = authenticate(username=username, password=raw_password)
-            login(request, user, alias)
-            return HttpResponseRedirect('/')
-    else:
-        form = SignUpForm()
-    return render(request, 'signup.html', {'form': form})
+            comment = form.save(commit=False)
+            comment.article = article
+            if request.user.is_authenticated():
+                comment.author = self.request.user.my_user
+            comment.save()
+            return redirect('/article/%s' % article.get_absolute_url())
+
+        context = self.get_context_data(object=article)
+        context['comment_form'] = form
+        return self.render_to_response(context)
 
 
 class CreatePost(FormView):
     form_class = NewArticleForm
     template_name = 'article_edit.html'
     success_url = '/articles/'
+    context_object_name = 'new_article'
 
     def form_valid(self, form):
         instance = form.save(commit=False)
@@ -91,3 +79,44 @@ class CreatePost(FormView):
         return redirect(self.get_success_url())
 
 
+def signup(request):
+    if request.method == 'POST':
+        form = SignUpForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            user.my_user.alias = form.cleaned_data.get('alias')
+            user.save()
+            raw_password = form.cleaned_data.get('password1')
+            user = authenticate(username=user.username, password=raw_password)
+            login(request, user)
+            return HttpResponseRedirect('/')
+    else:
+        form = SignUpForm()
+    return render(request, 'signup.html', {'form': form})
+
+
+def like(request):
+    vars = {}
+    if request.method == 'POST':
+        user = request.user.my_user
+        slug = request.POST.get('slug', None)
+        article = get_object_or_404(Article, slug=slug, pk=pk)
+
+        liked, created = Like.objects.create(Article=article)
+
+        try:
+            user_liked = Like.objects.get(Article=article, user=user)
+        except:
+            user_liked = None
+
+        if user_liked:
+            user_liked.total_likes -= 1
+            liked.user.remove(request.user)
+            user_liked.save()
+        else:
+            liked.user.add(request.user)
+            liked.total_likes += 1
+            liked.save()
+
+    return HttpResponse(simplejson.dumps(vars),
+                        mimetype='application/javascript')

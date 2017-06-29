@@ -28,8 +28,14 @@ class NewArticleForm(forms.ModelForm):
 
 
 class SignUpForm(UserCreationForm):
-    alias = forms.CharField(max_length=30, required=False, help_text='Optional.')
+    alias = forms.CharField(max_length=30, help_text='Optional.')
 
     class Meta:
         model = User
-        fields = ('username', 'alias', 'password1', 'password2', )
+        fields = ('username', 'alias', 'password1', 'password2',)
+
+
+class CommentForm(forms.ModelForm):
+    class Meta:
+        model = Comment
+        fields = ('title',)

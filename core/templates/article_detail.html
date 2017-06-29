@@ -2,11 +2,70 @@
 {% block content %}
 
     <div>
-        <h1><a href="{{ article.get_absolute_url }}">{{ i.title }}</a></h1>
+        <h2><a href="{{ article.get_absolute_url }}">{{ i.title }}</a></h2>
         <small>published: {{ article.created_at }}</small>
         <br>
         <img src="{{ article.image }}" alt="{{ article.title }}">
         {{ article.description|striptags|truncatechars:150 }}
     </div>
+    <hr>
+    {% for like in likes %}
+        <p>rating post is: {{ like.total_likes }}</p>
+        <p>people rating is: {% for user in like.user.all %}
+            {{ user }},
+        {% endfor %}</p>
+    {% endfor %}
+    <input type="button" id="like" name="{{ article_slug }}" value="Like"/>
+    <hr>
+    {% for comment in comments %}
+        <div class="comment">
+            <div class="date">{{ comment.created_at }}</div>
+            <strong>{{ comment.author }}</strong>
+            <p>{{ comment.title|linebreaks }}</p>
+        </div>
+    {% empty %}
+        <p>Комментариев пока нет :(</p>
+    {% endfor %}
+
+    {% if user.is_authenticated %}
+        <h2>Add Comment</h2>
+        <form action="" method="post">
+            {% csrf_token %}
+            {% for field in comment_form %}
+                <div class="fieldWrapper">
+
+                    {{ field.label_tag }}
+                    <br/>
+                    {{ field }}
+
+                </div>
+            {% endfor %}
+            <p>
+                <input type="submit" class="button" value="Comment"/>
+            </p>
+        </form>
+    {% else %}
+        <p style="color: #ff0098">Please
+            <a href="{% url 'signup' %}">Signup</a>
+            or
+            <a href="{% url 'login' %}">Login</a>
+            for send comment</p>
+    {% endif %}
+{#    <script>#}
+{#        $('#like').click(function () {#}
+{#            $.ajax({#}
+{#                type: "POST",#}
+{#                url: "{% url 'like' %}",#}
+{#                data: {'slug': $(this).attr('name'), 'csrfmiddlewaretoken': '{{csrf_token}}'},#}
+{#                dataType: "text",#}
+{#                success: function (response) {#}
+{#                    alert('You liked this')#}
+{#                },#}
+{#                error: function (rs, e) {#}
+{#                    alert(rs.responseText);#}
+{#                }#}
+{#            });#}
+{#        })#}
+{#    </script>#}
 
 {% endblock %}
