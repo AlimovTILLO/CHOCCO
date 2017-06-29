@@ -1,0 +1,5 @@
+django-wysiwyg-redactor
+django-taggit
+django-ajax-selects
+django
+simplejson

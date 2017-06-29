@@ -144,3 +144,4 @@ core/app/migrations/0008_auto_20170628_1443.py
 core/app/migrations/0009_auto_20170628_1545.py
 core/uploads/
 
+/core/media/
