@@ -1,42 +1,486 @@
-{% load staticfiles %}
+{% load i18n staticfiles %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-    <title>Hello, world!</title>
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <meta name="author" content="">
 
-    <!-- Bootstrap -->
-    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+    <title>qwertyuiopoiuytrtyuio</title>
 
-    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
-      <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
-      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-    <![endif]-->
+    <link href="{% static '/css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static '/toolkit.css' %}" rel="stylesheet">
+
+    <link href="{% static '/application.css' %}" rel="stylesheet">
+
+    <style>
+        body {
+            width: 1px;
+            min-width: 100%;
+            *width: 100%;
+        }
+    </style>
+
 </head>
-<body>
-<h1><a href="{% url 'articles_index' %}">Hello, world!</a></h1>
-{% if user.is_authenticated %}
-    <h3 style="color: #ff0098">Hi {{ request.user.my_user }}!</h3>
-    <a href="{% url 'logout' %}">Logout</a>
-    <a href="{% url 'new_article' %}">New article</a>
-    <a href="{% url 'articles_all' %}">All articles</a>
-{% else %}
-    <a href="{% url 'signup' %}">Signup</a>
-    <a href="{% url 'login' %}">Login</a>
-{% endif %}
+<body class="bpi">
+
+
+<div class="bpv" id="app-growl"></div>
+
+
+<nav class="ck rj aeq ro vq app-navbar">
+    <button class="re rh ayd" type="button" data-toggle="collapse" data-target="#navbarResponsive"
+            aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="rf"></span>
+    </button>
+
+    <a class="e" href="{% url 'articles_index' %}">
+        <img src="{% static '/brand-white.png' %}" alt="brand">
+    </a>
+
+    <div class="collapse f" id="navbarResponsive">
+        <ul class="navbar-nav ain">
+            <li class="qx active">
+                <a class="qv" href="{% url 'articles_index' %}">Home <span class="aet">(current)</span></a>
+            </li>
+            {% if user.is_authenticated %}
+                <li class="qx ayd">
+                    <a class="qv" href="{% url 'logout' %}">Logout</a>
+                </li>
+                <li class="qx">
+                    <a class="qv" href="{% url 'profile' %}">Profile</a>
+                </li>
+                <li class="qx">
+                    <a class="qv" href="{% url 'articles_all' %}">All articles</a>
+                </li>
+                <li class="qx">
+                    <a class="qv" href="{% url 'new_article' %}">New article</a>
+                </li>
+            {% else %}
+                <li class="qx">
+                    <a class="qv" href="{% url 'signup' %}">Signup</a>
+                </li>
+                <li class="qx ayd">
+                    <a class="qv" href="{% url 'login' %}">Login</a>
+                </li>
+            {% endif %}
+        </ul>
+
+        <form class="pf aec ayc">
+            <input class="form-control" type="text" data-action="grow" placeholder="Search">
+        </form>
+
+        <ul id="#js-popoverContent" class="nav navbar-nav aec afh ayc">
+            <li class="qx afx">
+                <button class="cg bqv bqw bpq" data-toggle="popover" data-original-title="" title="">
+                    <img class="wg" src="{% static '/avatar-dhg.png' %}">
+                </button>
+            </li>
+        </ul>
+
+        <ul class="nav navbar-nav hidden-xs-up" id="js-popoverContent">
+            {% if user.is_authenticated %}
+                <li class="qx"><a class="qv" href="{% url 'logout' %}">Logout</a></li>
+            {% else %}
+                <li class="qx"><a class="qv" href="{% url 'signup' %}">Signup</a></li>
+                <li class="qx"><a class="qv" href="{% url 'login' %}">Login</a></li>
+            {% endif %}
+        </ul>
+    </div>
+</nav>
+
+<div class="cd fade" id="msgModal" tabindex="-1" role="dialog" aria-labelledby="bqx" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="d">
+                <h5 class="modal-title">Messages</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            </div>
+
+            <div class="modal-body agv js-modalBody">
+                <div class="azd">
+                    <div class="bqe cj ca js-msgGroup">
+                        <a href="https://bootstrap-themes.github.io/application/#" class="b tw">
+                            <div class="tu">
+                                <img class="wg bqa wp yy agc" src="./avatar-fat.jpg">
+                                <div class="tv">
+                                    <strong>Jacob Thornton</strong> and <strong>1 other</strong>
+                                    <div class="bqo">
+                                        Aenean eu leo quam. Pellentesque ornare sem lacinia quam …
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                        <a href="https://bootstrap-themes.github.io/application/#" class="b tw">
+                            <div class="tu">
+                                <img class="wg bqa wp yy agc" src="./avatar-mdo.png">
+                                <div class="tv">
+                                    <strong>Mark Otto</strong> and <strong>3 others</strong>
+                                    <div class="bqo">
+                                        Brunch sustainable placeat vegan bicycle rights yeah…
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                        <a href="https://bootstrap-themes.github.io/application/#" class="b tw">
+                            <div class="tu">
+                                <img class="wg bqa wp yy agc" src="./avatar-dhg.png">
+                                <div class="tv">
+                                    <strong>Dave Gamache</strong>
+                                    <div class="bqo">
+                                        Brunch sustainable placeat vegan bicycle rights yeah…
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                        <a href="https://bootstrap-themes.github.io/application/#" class="b tw">
+                            <div class="tu">
+                                <img class="wg bqa wp yy agc" src="./avatar-fat.jpg">
+                                <div class="tv">
+                                    <strong>Jacob Thornton</strong> and <strong>1 other</strong>
+                                    <div class="bqo">
+                                        Aenean eu leo quam. Pellentesque ornare sem lacinia quam …
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                        <a href="https://bootstrap-themes.github.io/application/#" class="b tw">
+                            <div class="tu">
+                                <img class="wg bqa wp yy agc" src="./avatar-mdo.png">
+                                <div class="tv">
+                                    <strong>Mark Otto</strong> and <strong>3 others</strong>
+                                    <div class="bqo">
+                                        Brunch sustainable placeat vegan bicycle rights yeah…
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                        <a href="https://bootstrap-themes.github.io/application/#" class="b tw">
+                            <div class="tu">
+                                <img class="wg bqa wp yy agc" src="./avatar-dhg.png">
+                                <div class="tv">
+                                    <strong>Dave Gamache</strong>
+                                    <div class="bqo">
+                                        Brunch sustainable placeat vegan bicycle rights yeah…
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                        <a href="https://bootstrap-themes.github.io/application/#" class="b tw">
+                            <div class="tu">
+                                <img class="wg bqa wp yy agc" src="./avatar-fat.jpg">
+                                <div class="tv">
+                                    <strong>Jacob Thornton</strong> and <strong>1 other</strong>
+                                    <div class="bqo">
+                                        Aenean eu leo quam. Pellentesque ornare sem lacinia quam …
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                        <a href="https://bootstrap-themes.github.io/application/#" class="b tw">
+                            <div class="tu">
+                                <img class="wg bqa wp yy agc" src="./avatar-mdo.png">
+                                <div class="tv">
+                                    <strong>Mark Otto</strong> and <strong>3 others</strong>
+                                    <div class="bqo">
+                                        Brunch sustainable placeat vegan bicycle rights yeah…
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                        <a href="https://bootstrap-themes.github.io/application/#" class="b tw">
+                            <div class="tu">
+                                <img class="wg bqa wp yy agc" src="./avatar-dhg.png">
+                                <div class="tv">
+                                    <strong>Dave Gamache</strong>
+                                    <div class="bqo">
+                                        Brunch sustainable placeat vegan bicycle rights yeah…
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+
+                    <div class="hidden-xs-up aga js-conversation">
+                        <ul class="bqe bqk">
+                            <li class="tu bqn agk">
+                                <div class="tv">
+                                    <div class="bql">
+                                        Aenean eu leo quam. Pellentesque ornare sem lacinia quam venenatis vestibulum.
+                                        Nulla vitae elit libero, a pharetra augue. Maecenas sed diam eget risus varius
+                                        blandit sit amet non magna. Morbi leo risus, porta ac consectetur ac, vestibulum
+                                        at eros. Sed posuere consectetur est at lobortis.
+                                    </div>
+                                    <div class="bqm">
+                                        <small class="axr">
+                                            <a href="https://bootstrap-themes.github.io/application/#">Dave Gamache</a>
+                                            at 4:20PM
+                                        </small>
+                                    </div>
+                                </div>
+                                <img class="wg bqa wp yy agc" src="./avatar-dhg.png">
+                            </li>
+
+                            <li class="tu agk">
+                                <img class="wg bqa wp yy agc" src="./avatar-fat.jpg">
+                                <div class="tv">
+                                    <div class="bql">
+                                        Cras justo odio, dapibus ac facilisis in, egestas eget quam. Duis mollis, est
+                                        non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit.
+                                        Praesent commodo cursus magna, vel scelerisque nisl consectetur et.
+                                    </div>
+                                    <div class="bql">
+                                        Vestibulum id ligula porta felis euismod semper. Aenean lacinia bibendum nulla
+                                        sed consectetur. Cras justo odio, dapibus ac facilisis in, egestas eget quam.
+                                        Morbi leo risus, porta ac consectetur ac, vestibulum at eros. Praesent commodo
+                                        cursus magna, vel scelerisque nisl consectetur et. Nullam quis risus eget urna
+                                        mollis ornare vel eu leo. Morbi leo risus, porta ac consectetur ac, vestibulum
+                                        at eros.
+                                    </div>
+                                    <div class="bql">
+                                        Cras mattis consectetur purus sit amet fermentum. Donec sed odio dui. Integer
+                                        posuere erat a ante venenatis dapibus posuere velit aliquet. Nulla vitae elit
+                                        libero, a pharetra augue. Donec id elit non mi porta gravida at eget metus.
+                                    </div>
+                                    <div class="bqm">
+                                        <small class="axr">
+                                            <a href="https://bootstrap-themes.github.io/application/#">Fat</a> at 4:28PM
+                                        </small>
+                                    </div>
+                                </div>
+                            </li>
+
+                            <li class="tu agk">
+                                <img class="wg bqa wp yy agc" src="./avatar-mdo.png">
+                                <div class="tv">
+                                    <div class="bql">
+                                        Etiam porta sem malesuada magna mollis euismod. Donec id elit non mi porta
+                                        gravida at eget metus. Praesent commodo cursus magna, vel scelerisque nisl
+                                        consectetur et. Etiam porta sem malesuada magna mollis euismod. Morbi leo risus,
+                                        porta ac consectetur ac, vestibulum at eros. Aenean lacinia bibendum nulla sed
+                                        consectetur.
+                                    </div>
+                                    <div class="bql">
+                                        Curabitur blandit tempus porttitor. Integer posuere erat a ante venenatis
+                                        dapibus posuere velit aliquet. Duis mollis, est non commodo luctus, nisi erat
+                                        porttitor ligula, eget lacinia odio sem nec elit.
+                                    </div>
+                                    <div class="bqm">
+                                        <small class="axr">
+                                            <a href="https://bootstrap-themes.github.io/application/#">Mark Otto</a> at
+                                            4:20PM
+                                        </small>
+                                    </div>
+                                </div>
+                            </li>
+
+                            <li class="tu bqn agk">
+                                <div class="tv">
+                                    <div class="bql">
+                                        Aenean eu leo quam. Pellentesque ornare sem lacinia quam venenatis vestibulum.
+                                        Nulla vitae elit libero, a pharetra augue. Maecenas sed diam eget risus varius
+                                        blandit sit amet non magna. Morbi leo risus, porta ac consectetur ac, vestibulum
+                                        at eros. Sed posuere consectetur est at lobortis.
+                                    </div>
+                                    <div class="bqm">
+                                        <small class="axr">
+                                            <a href="https://bootstrap-themes.github.io/application/#">Dave Gamache</a>
+                                            at 4:20PM
+                                        </small>
+                                    </div>
+                                </div>
+                                <img class="wg bqa wp yy agc" src="./avatar-dhg.png">
+                            </li>
+
+                            <li class="tu agk">
+                                <img class="wg bqa wp yy agc" src="./avatar-fat.jpg">
+                                <div class="tv">
+                                    <div class="bql">
+                                        Cras justo odio, dapibus ac facilisis in, egestas eget quam. Duis mollis, est
+                                        non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit.
+                                        Praesent commodo cursus magna, vel scelerisque nisl consectetur et.
+                                    </div>
+                                    <div class="bql">
+                                        Vestibulum id ligula porta felis euismod semper. Aenean lacinia bibendum nulla
+                                        sed consectetur. Cras justo odio, dapibus ac facilisis in, egestas eget quam.
+                                        Morbi leo risus, porta ac consectetur ac, vestibulum at eros. Praesent commodo
+                                        cursus magna, vel scelerisque nisl consectetur et. Nullam quis risus eget urna
+                                        mollis ornare vel eu leo. Morbi leo risus, porta ac consectetur ac, vestibulum
+                                        at eros.
+                                    </div>
+                                    <div class="bql">
+                                        Cras mattis consectetur purus sit amet fermentum. Donec sed odio dui. Integer
+                                        posuere erat a ante venenatis dapibus posuere velit aliquet. Nulla vitae elit
+                                        libero, a pharetra augue. Donec id elit non mi porta gravida at eget metus.
+                                    </div>
+                                    <div class="bqm">
+                                        <small class="axr">
+                                            <a href="https://bootstrap-themes.github.io/application/#">Fat</a> at 4:28PM
+                                        </small>
+                                    </div>
+                                </div>
+                            </li>
+
+                            <li class="tu agk">
+                                <img class="wg bqa wp yy agc" src="./avatar-mdo.png">
+                                <div class="tv">
+                                    <div class="bql">
+                                        Etiam porta sem malesuada magna mollis euismod. Donec id elit non mi porta
+                                        gravida at eget metus. Praesent commodo cursus magna, vel scelerisque nisl
+                                        consectetur et. Etiam porta sem malesuada magna mollis euismod. Morbi leo risus,
+                                        porta ac consectetur ac, vestibulum at eros. Aenean lacinia bibendum nulla sed
+                                        consectetur.
+                                    </div>
+                                    <div class="bql">
+                                        Curabitur blandit tempus porttitor. Integer posuere erat a ante venenatis
+                                        dapibus posuere velit aliquet. Duis mollis, est non commodo luctus, nisi erat
+                                        porttitor ligula, eget lacinia odio sem nec elit.
+                                    </div>
+                                    <div class="bqm">
+                                        <small class="axr">
+                                            <a href="https://bootstrap-themes.github.io/application/#">Mark Otto</a> at
+                                            4:20PM
+                                        </small>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="cd fade" id="userModal" tabindex="-1" role="dialog" aria-labelledby="bqy" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="d">
+                <h4 class="modal-title">Users</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            </div>
+
+            <div class="modal-body agv">
+                <div class="azd">
+                    <ul class="bqe cj ca">
+                        <li class="b">
+                            <div class="tu aey">
+                                <img class="bqa wp yy agc" src="./avatar-fat.jpg">
+                                <div class="tv">
+                                    <button class="cg pl pz aec">
+                                        <span class="c bqz"></span> Follow
+                                    </button>
+                                    <strong>Jacob Thornton</strong>
+                                    <p>@fat - San Francisco</p>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="b">
+                            <div class="tu aey">
+                                <img class="bqa wp yy agc" src="./avatar-dhg.png">
+                                <div class="tv">
+                                    <button class="cg pl pz aec">
+                                        <span class="c bqz"></span> Follow
+                                    </button>
+                                    <strong>Dave Gamache</strong>
+                                    <p>@dhg - Palo Alto</p>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="b">
+                            <div class="tu aey">
+                                <img class="bqa wp yy agc" src="./avatar-mdo.png">
+                                <div class="tv">
+                                    <button class="cg pl pz aec">
+                                        <span class="c bqz"></span> Follow
+                                    </button>
+                                    <strong>Mark Otto</strong>
+                                    <p>@mdo - San Francisco</p>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="by ahy">
+    <div class="dq">
+
+        {% block profile %}{% endblock %}
+        {% block detail %}{% endblock %}
+        {% block index %}{% endblock %}
+
+        <div class="fh">
+            <div class="alert to alert-dismissible aye" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                        aria-hidden="true">×</span></button>
+                <a class="tl" href="https://bootstrap-themes.github.io/application/profile/index.html">Visit your
+                    profile!</a> Check your self, you aren't looking well.
+            </div>
+
+            <div class="rp agk aye">
+                <div class="rq">
+                    <h6 class="agd">Sponsored</h6>
+                    <div data-grid="images" data-target-height="150"><img class="bqa" data-width="640" data-height="640"
+                                                                          data-action="zoom" src="./instagram_2.jpg"
+                                                                          style="width: 239px; height: 225px; margin-bottom: 10px; margin-right: 0px; display: inline-block; vertical-align: bottom;">
+                    </div>
+                    <p><strong>It might be time to visit Iceland.</strong> Iceland is so chill, and everything looks
+                        cool here. Also, we heard the people are pretty nice. What are you waiting for?</p>
+                    <button class="cg pq pz">Buy a ticket</button>
+                </div>
+            </div>
+
+
+            <div class="rp bqu">
+                <div class="rq">
+                    © 2015 Bootstrap
+                    <a href="https://bootstrap-themes.github.io/application/#">About</a>
+                    <a href="https://bootstrap-themes.github.io/application/#">Help</a>
+                    <a href="https://bootstrap-themes.github.io/application/#">Terms</a>
+                    <a href="https://bootstrap-themes.github.io/application/#">Privacy</a>
+                    <a href="https://bootstrap-themes.github.io/application/#">Cookies</a>
+                    <a href="https://bootstrap-themes.github.io/application/#">Ads </a>
+                    <a href="https://bootstrap-themes.github.io/application/#">Info</a>
+                    <a href="https://bootstrap-themes.github.io/application/#">Brand</a>
+                    <a href="https://bootstrap-themes.github.io/application/#">Blog</a>
+                    <a href="https://bootstrap-themes.github.io/application/#">Status</a>
+                    <a href="https://bootstrap-themes.github.io/application/#">Apps</a>
+                    <a href="https://bootstrap-themes.github.io/application/#">Jobs</a>
+                    <a href="https://bootstrap-themes.github.io/application/#">Advertise</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 
 {% block content %}{% endblock %}
 
+<script src="{% static '/bootstrap.min.js' %}"></script>
 
-<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-<!-- Include all compiled plugins (below), or include individual files as needed -->
-<script src="{% static 'js/bootstrap.min.js' %}"></script>
+<script src="{% static '/jquery.min(1).js' %}"></script>
+<script src="{% static '/tether.min.js' %}"></script>
+<script src="{% static '/chart.js' %}"></script>
+<script src="{% static '/toolkit.js' %}"></script>
+<script src="{% static '/application.js' %}"></script>
+<script>
+    // execute/clear BS loaders for docs
+    $(function () {
+        if (window.BS && window.BS.loader && window.BS.loader.length) {
+            while (BS.loader.length) {
+                (BS.loader.pop())()
+            }
+        }
+    })
+</script>
 </body>
 </html>

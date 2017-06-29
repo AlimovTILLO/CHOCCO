@@ -1,0 +1,20 @@
+{% block like_content %}
+    <input type="button" id="like" name="{{ article_slug }}" value="Like"/>
+    {{ slug }}
+    <script>
+        $('#like').click(function () {
+            $.ajax({
+                type: "POST",
+                url: "{% url 'like' slug=slug %}",
+                data: {'slug': $(this).attr('name'), 'csrfmiddlewaretoken': '{{csrf_token}}'},
+                dataType: "text",
+                success: function (response) {
+                    alert('You liked this')
+                },
+                error: function (rs, e) {
+                    alert(rs.responseText);
+                }
+            });
+        })
+    </script>
+{% endblock %}

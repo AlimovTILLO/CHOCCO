@@ -1,19 +1,20 @@
+# encoding: utf-8
+import json as simplejson
+
+from django.contrib.auth import login, authenticate
+from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import ListView, DetailView, FormView
-from app.models import MyUser, Article, Comment, Category, Like
-from django.contrib.auth.forms import UserCreationForm
-from django.utils.decorators import method_decorator
-from django.contrib.auth import login, authenticate
+
 from app.forms import NewArticleForm, SignUpForm, CommentForm
-from django.http import HttpResponseRedirect
-from django.core.paginator import Paginator
-from django.utils import timezone
+from app.models import Article, Comment, Like
 
 
 class ArticleListView(ListView):
     template_name = 'post_list.html'
     model = Article
     paginate_by = 5
+
     # context_object_name = 'articles_index'
 
     def get_context_data(self, **kwargs):
@@ -24,12 +25,22 @@ class ArticleListView(ListView):
 
 class ArticlesIndex(ArticleListView):
     template_name = 'index.html'
+
     # context_object_name = 'articles_all'
 
     def get_context_data(self, **kwargs):
         context = super(ArticlesIndex, self).get_context_data(**kwargs)
         # context['top_articles'] = Article.objects.filter(published=True).order_by('created_at').exclude(rating__lt=10)
         context['top_articles'] = Article.objects.filter(published=True).order_by('created_at')
+        return context
+
+
+class ProfileListView(ArticleListView):
+    template_name = 'profile.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(ProfileListView, self).get_context_data(**kwargs)
+        context['my_articles'] = Article.objects.filter(author=self.request.user.my_user).order_by('created_at')
         return context
 
 
@@ -47,6 +58,7 @@ class ArticleDetailView(DetailView):
         context['article'] = Article.objects.get(pk=self.kwargs['pk'])
         context['likes'] = Like.objects.filter(article=self.object.id)
         context['comments'] = Comment.objects.filter(article=self.object.id).select_related().order_by('-created_at')
+        context['slug'] = self.kwargs['slug']
         return context
 
     def post(self, request, *args, **kwargs):
@@ -95,12 +107,12 @@ def signup(request):
     return render(request, 'signup.html', {'form': form})
 
 
-def like(request):
+def like(request, *args, **kwargs):
     vars = {}
     if request.method == 'POST':
         user = request.user.my_user
         slug = request.POST.get('slug', None)
-        article = get_object_or_404(Article, slug=slug, pk=pk)
+        article = get_object_or_404(Article, slug=slug)
 
         liked, created = Like.objects.create(Article=article)
 
@@ -118,5 +130,4 @@ def like(request):
             liked.total_likes += 1
             liked.save()
 
-    return HttpResponse(simplejson.dumps(vars),
-                        mimetype='application/javascript')
+    return HttpResponse(simplejson.dumps(vars), content_type='application/javascript')
