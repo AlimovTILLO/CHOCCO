@@ -1,11 +1,18 @@
 {% extends "base.html" %}
 {% block profile %}
 
+
+    <div class="fh">
+
+    </div>
+
+    <div class="fk">
     <h2>Login</h2>
     <form method="post">
         {% csrf_token %}
         {{ form.as_p }}
         <button type="submit">Login</button>
     </form>
+    </div>
 
 {% endblock %}

@@ -1,7 +1,8 @@
 {% extends 'base.html' %}
 {% block detail %}
 
-
+    <div class="fh">
+    </div>
     <div class="fk">
 
         <ul class="ca bqe bqf agk">
@@ -16,12 +17,13 @@
                     <h4>{{ article.title }}</h4>
 
                     <p>{{ article.description|striptags|truncatechars:150 }}</p>
-
+                    {% if article.image %}
                     <div class="bqg" data-grid="images"><img
                             style="display: inline-block; width: 466px; height: 451px; margin-bottom: 10px; margin-right: 0px; vertical-align: bottom;"
                             data-width="640" data-height="640" data-action="zoom" src="{{ article.image.url }}"></div>
+                    {% endif %}
                     {% for like in likes %}
-                        <p>rating post is: {{ like.total_likes }}</p>
+                        <p>like : {{ like.total_likes }}</p>
                         <p>people like is: {% for user in like.user.all %}
                             {{ user }},
                         {% endfor %}</p>
