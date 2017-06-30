@@ -1,17 +1,12 @@
-{% extends "base.html" %}
 {% load i18n staticfiles %}
-{% block profile %}
-
-    {% include 'include/profile_widget.html' %}
+{% block profile_widget %}
 
     <div class="fk">
 
         <ul class="ca bqe bqf agk">
-            {% for article in my_articles %}
+            {% for article in articles %}
                 <li class="tu b ahx"><a href="/article/{{ article.get_absolute_url }}">
-                    {% if article.author.image %}
-                        <img class="bqa wp yy agc" src="{{ article.author.image.url }}">
-                    {% endif %}
+                    <img class="bqa wp yy agc" src="./avatar-mdo.png">
                     <div class="tv">
                         <div class="bqj">
                             <small class="aec axr">{{ article.created_at }}</small>

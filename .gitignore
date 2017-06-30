@@ -145,3 +145,8 @@ core/app/migrations/0009_auto_20170628_1545.py
 core/uploads/
 
 /core/media/
+!/requirements.txt
+.idea/preferred-vcs.xml
+core/static/avatar-fat.jpg
+core/static/avatar-mdo.png
+/core/static/avatar-dhg.png

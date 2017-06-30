@@ -1,73 +1,8 @@
 {% extends 'base.html' %}
 {% block index %}
 
-    <div class="fh">
-        <div class="rp agk aye">
-            <div class="rq">
-                <h6 class="agd">Likes
-                    <small>· <a href="https://bootstrap-themes.github.io/application/#">View All</a></small>
-                </h6>
-                <ul class="bqe bqf">
-                    <li class="tu afw">
-                        <img class="bqa wp yy agc" src="./avatar-fat.jpg">
-                        <div class="tv">
-                            <strong>Jacob Thornton</strong> @fat
-                            <div class="bqi">
-                                <button class="cg pq pz">
-                                    <span class="h azp"></span> Follow
-                                </button>
-                            </div>
-                        </div>
-                    </li>
-                    <li class="tu">
-                        <a class="brc" href="https://bootstrap-themes.github.io/application/#">
-                            <img class="bqa wp yy agc" src="./avatar-mdo.png">
-                        </a>
-                        <div class="tv">
-                            <strong>Mark Otto</strong> @mdo
-                            <div class="bqi">
-                                <button class="cg pq pz">
-                                    <span class="h azp"></span> Follow
-                                </button>
-                            </div>
-                        </div>
-                    </li>
-                </ul>
-            </div>
-            <div class="rw">
-                Dave really likes these nerds, no one knows why though.
-            </div>
-        </div>
-    </div>
+    {% include 'include/likes_widget.html' %}
 
-    <div class="fk">
-
-        <ul class="ca bqe bqf agk">
-            {% for article in articles %}
-                <li class="tu b ahx"><a href="/article/{{ article.get_absolute_url }}">
-                    <img class="bqa wp yy agc" src="./avatar-mdo.png">
-                    <div class="tv">
-                        <div class="bqj">
-                            <small class="aec axr">{{ article.created_at }}</small>
-                            <h6>{{ article.author }}</h6>
-                        </div>
-                        <h4>{{ article.title }}</h4>
-
-                        <p>{{ article.description|striptags|truncatechars:150 }}</p>
-                        {% if article.image %}
-                            <div class="bqg" data-grid="images"><img
-                                    style="display: inline-block; width: 321px; height: 321px; margin-bottom: 10px; margin-right: 0px; vertical-align: bottom;"
-                                    data-width="321" data-height="321" data-action="zoom" src="{{ article.image.url }}">
-                            </div>
-                        {% endif %}
-                    </div>
-                </a>
-                </li>
-
-            {% empty %}
-                <p>Статей не обнаружено :(</p>
-            {% endfor %}
-        </ul>
-    </div>
+    {% include 'include/posts.html' %}
 
 {% endblock %}

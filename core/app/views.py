@@ -30,7 +30,7 @@ class ArticlesIndex(ArticleListView):
 
     def get_context_data(self, **kwargs):
         context = super(ArticlesIndex, self).get_context_data(**kwargs)
-        context['top_articles'] = Like.objects.exclude(total_likes__lt=5)
+        context['articles'] = Like.objects.exclude(total_likes__lt=5)
         # context['top_articles'] = Article.objects.filter(published=True).order_by('created_at')
         return context
 
