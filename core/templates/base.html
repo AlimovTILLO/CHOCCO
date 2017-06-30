@@ -77,7 +77,9 @@
         <ul id="#js-popoverContent" class="nav navbar-nav aec afh ayc">
             <li class="qx afx">
                 <button class="cg bqv bqw bpq" data-toggle="popover" data-original-title="" title="">
-                    <img class="wg" src="{% static '/avatar-dhg.png' %}">
+                    {% if request.user.my_user.image %}
+                        <img class="wg" src="{{ request.user.my_user.image.url }}">
+                    {% endif %}
                 </button>
             </li>
         </ul>

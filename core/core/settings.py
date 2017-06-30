@@ -56,7 +56,7 @@ ROOT_URLCONF = 'core.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': ['templates'],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -126,5 +126,5 @@ REDACTOR_OPTIONS = {'lang': 'ru'}
 REDACTOR_UPLOAD = 'uploads/'
 
 LOGIN_REDIRECT_URL = '/'
-MEDIA_ROOT = '/home/alimovtillo/PycharmProjects/CHOCCO/core/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'

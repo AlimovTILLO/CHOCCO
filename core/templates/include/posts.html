@@ -6,7 +6,9 @@
         <ul class="ca bqe bqf agk">
             {% for article in articles %}
                 <li class="tu b ahx"><a href="/article/{{ article.get_absolute_url }}">
-                    <img class="bqa wp yy agc" src="./avatar-mdo.png">
+                    {% if article.author.image %}
+                        <img class="bqa wp yy agc" src="{{ article.author.image.url }}">
+                    {% endif %}
                     <div class="tv">
                         <div class="bqj">
                             <small class="aec axr">{{ article.created_at }}</small>

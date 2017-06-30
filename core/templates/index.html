@@ -9,7 +9,9 @@
             <h2>TOP ARTICLES</h2>
             {% for article in articles %}
                 <li class="tu b ahx"><a href="/article/{{ article.article.get_absolute_url }}">
-                    <img class="bqa wp yy agc" src="./avatar-mdo.png">
+                    {% if article.article.author.image %}
+                        <img class="bqa wp yy agc" src="{{ article.article.author.image.url }}">
+                    {% endif %}
                     <div class="tv">
                         <div class="bqj">
                             <small class="aec axr">{{ article.article.created_at }}</small>

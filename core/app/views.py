@@ -15,8 +15,6 @@ class ArticleListView(ListView):
     model = Article
     paginate_by = 5
 
-    # context_object_name = 'articles_index'
-
     def get_context_data(self, **kwargs):
         context = super(ArticleListView, self).get_context_data(**kwargs)
         context['articles'] = Article.objects.filter(published=True).order_by('created_at')
@@ -26,12 +24,9 @@ class ArticleListView(ListView):
 class ArticlesIndex(ArticleListView):
     template_name = 'index.html'
 
-    # context_object_name = 'articles_all'
-
     def get_context_data(self, **kwargs):
         context = super(ArticlesIndex, self).get_context_data(**kwargs)
         context['articles'] = Like.objects.exclude(total_likes__lt=5)
-        # context['top_articles'] = Article.objects.filter(published=True).order_by('created_at')
         return context
 
 
@@ -46,12 +41,7 @@ class ProfileListView(ArticleListView):
 
 class ArticleDetailView(DetailView):
     model = Article
-    # context_object_name = 'article'
     template_name = 'article_detail.html'
-
-    def get_object(self):
-        obj = get_object_or_404(Article, slug=self.kwargs['slug'], pk=self.kwargs['pk'])
-        return obj
 
     def get_context_data(self, **kwargs):
         context = super(ArticleDetailView, self).get_context_data(**kwargs)
